@@ -1,40 +1,93 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import axios from 'axios'
-import logo from './logo.svg';
 import './App.css';
+import 'font-awesome/css/font-awesome.css'
+import Table from 'react-bootstrap/lib/Table'
+import Image from 'react-bootstrap/lib/Image'
+// import Row from './Row';
 
 class App extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      top100: null
+      top100Days: [],
+      top100AllTime: [],
+      current: true
     }
 
   }
-
-  componentDidMount() {
-    axios.get("https://fcctop100.herokuapp.com/api/fccusers/top/recent")
+  getFCCData(url, stateName) {
+    axios.get(url)
       .then(({ data }) => {
-        this.setState({ top100: data })
+        this.setState({ [stateName]: data });
+        console.log(this.state.top100Days);
+        // this.setState({current: true})
       })
   }
 
+  pointChange(value) {
+
+    if (this.state.current !== value) {
+      this.setState({ current: value });
+      console.log(2);
+    }
+  }
+
+  componentDidMount() {
+
+    this.getFCCData("https://fcctop100.herokuapp.com/api/fccusers/top/recent", "top100Days");
+    this.getFCCData("https://fcctop100.herokuapp.com/api/fccusers/top/alltime", "top100AllTime");
+
+  }
+
   render() {
+    const { top100Days, top100AllTime, current } = this.state;
     return (
-      <div className="App">
-        <table>
-          <caption>Leaderboard</caption>
-          <tr>
-            <th>#</th>
-            <th>Camper Name</th>
-            <th>Points in past 30 days</th>
-            <th>All Time Points</th>
-          </tr>
+      <div className="App container text-center">
+        <header>
+          <div id="fccHeading"> <h1><i className="fa fa-free-code-camp fa-lg" aria-hidden="true"></i> FreeCodeCamp</h1>
+            <h2>Data Visualization Project: Camper Leaderboard</h2>
+            <a href="https://www.YouTube.com/CodingTutorials360" target="blank"><h3><i className="fa fa-youtube-play"></i> Check Out My YouTube Channel</h3>
+              <Image src="http://codingtutorials360.com/img/smallLogo.png" className="imgHeight2" /></a>
+          </div>
+
+        </header>
+        <Table striped bordered condensed hover className="colorBlack">
+
+          <thead>
+            <tr>
+              <th># </th>
+              <th>Camper Name</th>
+              <th onClick={(event) => this.pointChange(true)}>Points in past 30 days {current && (<i className="fa fa-caret-down" aria-hidden="true"></i>)}</th>
+              <th onClick={(event) => this.pointChange(false)}>All Time Points {current === false && (<i className="fa fa-caret-down" aria-hidden="true"></i>)}</th>
+            </tr>
+          </thead>
           <tbody>
-            <tr></tr>
+            {current && (
+              top100Days.map((row, index) => (
+                <tr key={row.username}>
+                  <td>{index + 1}</td>
+                  <td><a href={`https://www.freecodecamp.org/${row.username}`} ><Image src={row.img} className='imgHeight' circle alt='User' /> {row.username}</a></td>
+                  <td>{row.recent}</td>
+                  <td>{row.alltime}</td>
+                </tr>
+              ))
+            )}
+
+            {current === false && (
+              top100AllTime.map((row, index) => (
+                <tr key={row.username}>
+                  <td>{index + 1}</td>
+                  <td><a href={`https://www.freecodecamp.org/${row.username}`} ><Image src={row.img} className='imgHeight' circle alt='User' /> {row.username}</a></td>
+                  <td>{row.recent}</td>
+                  <td>{row.alltime}</td>
+                </tr>
+              ))
+            )}
+
           </tbody>
-        </table>
+        </Table>
       </div>
     );
   }

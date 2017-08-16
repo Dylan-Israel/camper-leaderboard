@@ -1,7 +1,11 @@
 .App {
   text-align: center;
 }
-
+body{
+   background-color: #939393;
+  color: #f5f5f5;
+  font-family: 'Lato', sans-serif;
+}
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 80px;
@@ -14,8 +18,30 @@
   color: white;
 }
 
+.imgHeight{
+  height:50px;
+  float:left;
+  border: 1px solid black;
+}
+
+.imgHeight2{
+  height:100px;
+}
+
+.textLeft{
+  float:left
+}
+
+.fa-youtube-play{
+  color:red;
+}
+
 .App-intro {
   font-size: large;
+}
+
+.colorBlack{
+color:black;
 }
 
 @keyframes App-logo-spin {
